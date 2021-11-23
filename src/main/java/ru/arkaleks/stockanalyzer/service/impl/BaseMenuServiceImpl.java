@@ -45,6 +45,8 @@ public class BaseMenuServiceImpl implements BaseMenuService {
     public void fillActions() {
         System.out.println("   Основное меню.");
         this.actions.add(new AddData(0, "Добавить новые данные."));
+        this.actions.add(new AddData(1,"Сформировать отчёт."));
+        this.actions.add(new AddData(2,"Выйти из приложения."));
       //TODO: добавить остальные пункты меню
     }
 
