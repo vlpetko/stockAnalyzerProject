@@ -5,6 +5,7 @@ import java.sql.*;
 import java.util.Properties;
 
 public class DataBaseConnector {
+    private static final String TABLE = "traidStoks";
 
     public DataBaseConnector() {
     }
@@ -34,12 +35,22 @@ public class DataBaseConnector {
      * @return true
      * @throws SQLException
      */
-    private void checkSchema(Connection connection) {
+    private boolean checkSchema(Connection connection) {
+        boolean result = false;
         try {
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet res = metaData.getTables(null,null,"%",null);
+            while (res.next()) {
+                if (res.getString("TABLE_NAME").equals(TABLE)) {
+                    result = true;
+                }
+            }
+            res.close();
           //TODO:реализовать метод
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return result;
     }
 
     /**
@@ -51,7 +62,16 @@ public class DataBaseConnector {
      */
     private boolean createTable(Connection connection, String tableName) {
         boolean result = false;
-        String createTable = null;
+        String createTable = "CREATE TABLE IF NOT EXISTS " + TABLE + " ("
+                + "traidStoks_id VARCHAR (10) NOT NULL, "
+                + "traidStoks_tradingDate TIMESTAMP NOT NULL, "
+                + "traidStocks_openPrice NUMERIC(20,14) NOT NULL, "
+                + "traidStocks_highPrice NUMERIC(20,14) NOT NULL, "
+                + "traidStocks_lowPrice NUMERIC(20,14) NOT NULL, "
+                + "traidStocks_closePrice NUMERIC(20,14) NOT NULL, "
+                + "traidStocks_adjClosePrice NUMERIC(20,14) NOT NULL, "
+                + "traidStocks_volume INTEGER NOT NULL, "
+                + ")";
 
         //TODO:реализовать метод
 

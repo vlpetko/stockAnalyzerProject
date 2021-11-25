@@ -6,14 +6,14 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-//@Data
-//@AllArgsConstructor
-//@NoArgsConstructor
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Stock {
 
     private String id;
 
-    private LocalDate date;
+    private LocalDate tradingDate;
 
     private double openPrice;
 
