@@ -21,6 +21,7 @@ public class DataBaseConnector {
                     config.getProperty("password")
             );
             checkSchema(connection);
+            createTable(connection, TABLE);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -62,15 +63,15 @@ public class DataBaseConnector {
      */
     private boolean createTable(Connection connection, String tableName) {
         boolean result = false;
-        String createTable = "CREATE TABLE IF NOT EXISTS " + TABLE + " ("
-                + "traidStoks_id VARCHAR (10) NOT NULL, "
+        String createTable = "CREATE TABLE IF NOT EXISTS " + tableName + " ("
+                + "traidStoks_id SERIAL, "
                 + "traidStoks_tradingDate TIMESTAMP NOT NULL, "
                 + "traidStocks_openPrice NUMERIC(20,14) NOT NULL, "
                 + "traidStocks_highPrice NUMERIC(20,14) NOT NULL, "
                 + "traidStocks_lowPrice NUMERIC(20,14) NOT NULL, "
                 + "traidStocks_closePrice NUMERIC(20,14) NOT NULL, "
                 + "traidStocks_adjClosePrice NUMERIC(20,14) NOT NULL, "
-                + "traidStocks_volume INTEGER NOT NULL, "
+                + "traidStocks_volume INTEGER NOT NULL "
                 + ")";
 
         //TODO:реализовать метод
