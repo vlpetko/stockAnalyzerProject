@@ -5,8 +5,10 @@ import ru.arkaleks.stockanalyzer.service.BaseService;
 import ru.arkaleks.stockanalyzer.service.InputService;
 import ru.arkaleks.stockanalyzer.service.BaseMenuService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.function.Consumer;
 
 public class BaseMenuServiceImpl implements BaseMenuService {
@@ -81,7 +83,19 @@ public class BaseMenuServiceImpl implements BaseMenuService {
         public void execute(InputService inputService, BaseService baseService) {
 
         //TODO: реализовать метод
+
+            String position = inputService.ask("0. Загрузка данных из файла\n1. Ручное добавление записей\nВведите пункт меню : ");
+
+
+            try {
+                baseService.addData(position);
+            } catch (IOException e) {
+                System.out.println("Не выбран пункт");
+                e.printStackTrace();
+            }
+
         }
+
     }
 
     /**
@@ -95,6 +109,7 @@ public class BaseMenuServiceImpl implements BaseMenuService {
 
         public void execute(InputService inputService, BaseService baseService) {
             //TODO: реализовать метод
+
         }
     }
 
@@ -109,6 +124,7 @@ public class BaseMenuServiceImpl implements BaseMenuService {
 
         public void execute(InputService inputService, BaseService baseService) {
             //TODO: реализовать метод
+
         }
     }
 
@@ -123,6 +139,7 @@ public class BaseMenuServiceImpl implements BaseMenuService {
         }
 
         public void execute(InputService inputService, BaseService baseService) {
+
         }
     }
 }

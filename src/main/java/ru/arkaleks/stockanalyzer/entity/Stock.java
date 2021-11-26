@@ -11,7 +11,17 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Stock {
 
-    private String id;
+    public Stock(LocalDate tradingDate, double openPrice, double highPrice, double lowPrice, double closePrice, double adjClosePrice, int volume) {
+        this.tradingDate = tradingDate;
+        this.openPrice = openPrice;
+        this.highPrice = highPrice;
+        this.lowPrice = lowPrice;
+        this.closePrice = closePrice;
+        this.adjClosePrice = adjClosePrice;
+        this.volume = volume;
+    }
+
+    private int id;
 
     private LocalDate tradingDate;
 
