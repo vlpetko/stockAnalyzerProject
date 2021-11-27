@@ -1,6 +1,7 @@
 package ru.arkaleks.stockanalyzer.service.impl;
 
 import com.opencsv.CSVReader;
+import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import ru.arkaleks.stockanalyzer.entity.Stock;
 import ru.arkaleks.stockanalyzer.service.BaseService;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BaseServiceImpl implements BaseService {
 
@@ -39,36 +41,9 @@ public class BaseServiceImpl implements BaseService {
 
         int key = Integer.parseInt(position);
         if(key == 0){
-            String choice = inputService.ask("Введите путь к файлу");
-            try {
-                CSVReader csvReader = new CSVReader(new FileReader(choice));
+            String pathToFile = inputService.ask("Введите путь к файлу");
+            uploadFile(pathToFile);
 
-                String[] record = null;
-
-                while ((record = csvReader.readNext()) != null ){
-                    Stock stock = new Stock();
-                    stock.setTradingDate(LocalDate.parse(record[0]));
-                    stock.setOpenPrice(Double.parseDouble(record[1]));
-                    stock.setHighPrice(Double.parseDouble(record[2]));
-                    stock.setLowPrice(Double.parseDouble(record[3]));
-                    stock.setClosePrice(Double.parseDouble(record[4]));
-                    stock.setAdjClosePrice(Double.parseDouble(record[5]));
-                    stock.setVolume(Integer.parseInt(record[6]));
-                    System.out.println(record);
-                    list.add(stock);
-                }
-
-                csvReader.close();
-
-            } catch (FileNotFoundException e) {
-                System.out.println("Файл не найден");
-                e.printStackTrace();
-            } catch (CsvValidationException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            
         }
     }
 
@@ -78,6 +53,29 @@ public class BaseServiceImpl implements BaseService {
     @Override
     public void generateReport() {
 
+    }
+
+    private void uploadFile(String path){
+        if(path.toLowerCase().endsWith(".csv")){
+            EditorServiceImpl editorService = new EditorServiceImpl(connection);
+            try {
+                List<Stock> stocksFromFile = new CsvToBeanBuilder(new FileReader(path))
+                        .withSkipLines(1)
+                        .withType(Stock.class)
+                        .build()
+                        .parse();
+
+                for (Stock stock : stocksFromFile){
+                    editorService.add(stock);
+                }
+
+            } catch (FileNotFoundException e) {
+                System.out.println("Файл не найден");
+                e.printStackTrace();
+            }
+        }else{
+            System.out.println("Выберите csv-файл");
+        }
     }
 
 }

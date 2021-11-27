@@ -1,5 +1,7 @@
 package ru.arkaleks.stockanalyzer.entity;
 
+import com.opencsv.bean.CsvBindByPosition;
+import com.opencsv.bean.CsvDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,17 +25,25 @@ public class Stock {
 
     private int id;
 
+    @CsvDate(value = "yyyy-MM-dd")
+    @CsvBindByPosition(position = 0)
     private LocalDate tradingDate;
 
+    @CsvBindByPosition(position = 1)
     private double openPrice;
 
+    @CsvBindByPosition(position = 2)
     private double highPrice;
 
+    @CsvBindByPosition(position = 3)
     private double lowPrice;
 
+    @CsvBindByPosition(position = 4)
     private double closePrice;
 
+    @CsvBindByPosition(position = 5)
     private double adjClosePrice;
 
+    @CsvBindByPosition(position = 6)
     private int volume;
 }

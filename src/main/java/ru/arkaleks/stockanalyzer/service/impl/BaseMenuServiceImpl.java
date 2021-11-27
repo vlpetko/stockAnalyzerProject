@@ -47,11 +47,10 @@ public class BaseMenuServiceImpl implements BaseMenuService {
     public void fillActions() {
         System.out.println("   Основное меню.");
         this.actions.add(new AddData(0, "Добавить новые данные."));
-        this.actions.add(new AddData(1,"Сформировать отчёт."));
-        this.actions.add(new AddData(2,"Выйти из приложения."));
-      //TODO: добавить остальные пункты
+        this.actions.add(new AddData(1, "Сформировать отчёт."));
+        this.actions.add(new AddData(2, "Выйти из приложения."));
+        //TODO: добавить остальные пункты
     }
-
 
 
     /**
@@ -82,9 +81,11 @@ public class BaseMenuServiceImpl implements BaseMenuService {
 
         public void execute(InputService inputService, BaseService baseService) {
 
-        //TODO: реализовать метод
+            //TODO: реализовать метод
 
-            String position = inputService.ask("0. Загрузка данных из файла\n1. Ручное добавление записей\nВведите пункт меню : ");
+            String position = inputService.ask("0. Загрузка данных из файла\n" +
+                    "1. Ручное добавление записей\n" +
+                    "Введите пункт меню : ");
 
 
             try {

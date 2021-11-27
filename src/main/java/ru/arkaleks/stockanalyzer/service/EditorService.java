@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 public interface EditorService {
 
-    Stock add(Stock stock);
+    void add(Stock stock);
 
     void replace(Long id, Stock stock);
 
