@@ -66,6 +66,8 @@ public class BaseServiceImpl implements BaseService {
                         .parse();
 
                 for (Stock stock : stocksFromFile){
+                    stock.setStockName("asd");
+                    stock.setReportNumber(777);
                     editorService.add(stock);
                 }
 

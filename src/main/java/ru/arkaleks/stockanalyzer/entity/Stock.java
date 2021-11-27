@@ -13,7 +13,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Stock {
 
-    public Stock(LocalDate tradingDate, double openPrice, double highPrice, double lowPrice, double closePrice, double adjClosePrice, int volume) {
+    public Stock(LocalDate tradingDate, double openPrice, double highPrice, double lowPrice, double closePrice,
+                 double adjClosePrice, int volume) {
         this.tradingDate = tradingDate;
         this.openPrice = openPrice;
         this.highPrice = highPrice;
@@ -46,4 +47,10 @@ public class Stock {
 
     @CsvBindByPosition(position = 6)
     private int volume;
+
+    private String stockName;
+
+    private int reportNumber;
+
+    private LocalDate uploadDate;
 }

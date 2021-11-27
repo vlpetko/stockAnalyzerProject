@@ -71,7 +71,10 @@ public class DataBaseConnector {
                 + "traidStocks_lowPrice NUMERIC(20,14) NOT NULL, "
                 + "traidStocks_closePrice NUMERIC(20,14) NOT NULL, "
                 + "traidStocks_adjClosePrice NUMERIC(20,14) NOT NULL, "
-                + "traidStocks_volume INTEGER NOT NULL "
+                + "traidStocks_volume INTEGER NOT NULL, "
+                + "traidStocks_stockName VARCHAR (30), "
+                + "traidStocks_reportNumber INTEGER, "
+                + "c TIMESTAMP "
                 + ")";
 
         //TODO:реализовать метод
