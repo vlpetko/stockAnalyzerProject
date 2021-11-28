@@ -38,9 +38,9 @@ public class Application {
      * Основой цикл программы.
      */
     public void init() {
-        System.out.println("**************************");
-        System.out.println("*     STOCKANALAIZER     *");
-        System.out.println("**************************");
+        System.out.println("**************************\n" +
+                "*     STOCKANALAIZER     *\n" +
+                "**************************");
         boolean exit = false;
         while (!exit) {
             BaseMenuService menu = new BaseMenuServiceImpl(this.inputService, this.baseService);

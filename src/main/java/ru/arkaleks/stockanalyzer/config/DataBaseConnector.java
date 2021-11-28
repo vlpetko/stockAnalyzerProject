@@ -74,10 +74,9 @@ public class DataBaseConnector {
                 + "traidStocks_volume INTEGER NOT NULL, "
                 + "traidStocks_stockName VARCHAR (30), "
                 + "traidStocks_reportNumber INTEGER, "
-                + "c TIMESTAMP "
+                + "traidStocks_uploaddate TIMESTAMP "
                 + ")";
 
-        //TODO:реализовать метод
 
         if (createTable != null) {
             try (

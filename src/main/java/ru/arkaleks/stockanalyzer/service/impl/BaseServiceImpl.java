@@ -14,12 +14,14 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BaseServiceImpl implements BaseService {
 
     private final Connection connection;
-
+    private final Map<String, String> tickers = new HashMap<>();
 
     /**
      * Получение данных от пользователя.
@@ -41,7 +43,7 @@ public class BaseServiceImpl implements BaseService {
 
         int key = Integer.parseInt(position);
         if(key == 0){
-            String pathToFile = inputService.ask("Введите путь к файлу");
+          String pathToFile = inputService.ask("Введите путь к файлу");
             uploadFile(pathToFile);
 
         }
@@ -65,8 +67,10 @@ public class BaseServiceImpl implements BaseService {
                         .build()
                         .parse();
 
+                String tickerName = path.substring(path.lastIndexOf("\\") + 1,path.lastIndexOf(".csv"));
+
                 for (Stock stock : stocksFromFile){
-                    stock.setStockName("asd");
+                    stock.setStockName(findFullStockNameByTicker(tickerName));
                     stock.setReportNumber(777);
                     editorService.add(stock);
                 }
@@ -78,6 +82,13 @@ public class BaseServiceImpl implements BaseService {
         }else{
             System.out.println("Выберите csv-файл");
         }
+    }
+
+    private String findFullStockNameByTicker(String keyName){
+
+        tickers.put("TSLA","Tesla");
+
+        return tickers.get(keyName);
     }
 
 }
