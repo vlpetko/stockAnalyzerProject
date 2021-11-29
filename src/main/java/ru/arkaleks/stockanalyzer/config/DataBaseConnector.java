@@ -7,6 +7,8 @@ import java.util.Properties;
 public class DataBaseConnector {
     private static final String TABLE = "traid_stoks";
 
+    private static final String REPCOUNT = "report_counter";
+
     public DataBaseConnector() {
     }
 
@@ -22,6 +24,7 @@ public class DataBaseConnector {
             );
             checkSchema(connection);
             createTable(connection, TABLE);
+            createReportCounter(connection,REPCOUNT);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -83,7 +86,7 @@ public class DataBaseConnector {
                     PreparedStatement ps = connection.prepareStatement(createTable)) {
                 ps.executeUpdate();
                 result = true;
-                System.out.println("Table \"tableName\" was created successfully!");
+                System.out.println("Table " + tableName + " was created successfully!");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -91,7 +94,24 @@ public class DataBaseConnector {
         return result;
     }
 
+    private boolean createReportCounter(Connection connection, String tableName){
+        boolean result = false;
+        String createtable = "CREATE TABLE IF NOT EXISTS " + tableName + " ("
+                + "report_counter_id SERIAL, "
+                + "report_counter_amount INTEGER "
+                + ")";
 
+        if(createtable != null){
+            try (PreparedStatement ps = connection.prepareStatement(createtable)){
+                ps.executeUpdate();
+                result = true;
+                System.out.println("Table " + tableName + " was created successfully!");
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return result;
+    }
 }
 
 
