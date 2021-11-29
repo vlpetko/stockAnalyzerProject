@@ -69,11 +69,19 @@ public class BaseServiceImpl implements BaseService {
 
                 String tickerName = path.substring(path.lastIndexOf("\\") + 1,path.lastIndexOf(".csv"));
 
+                int repCount = editorService.getReportCounter() + 1;
+
                 for (Stock stock : stocksFromFile){
                     stock.setStockName(findFullStockNameByTicker(tickerName));
-                    stock.setReportNumber(777);
+                    stock.setReportNumber(repCount);
                     editorService.add(stock);
                 }
+                if(repCount == 1){
+                    editorService.setReportCounter(repCount);
+                }else{
+                    editorService.updateReportCounter(repCount);
+                }
+
 
             } catch (FileNotFoundException e) {
                 System.out.println("Файл не найден");
@@ -87,6 +95,7 @@ public class BaseServiceImpl implements BaseService {
     private String findFullStockNameByTicker(String keyName){
 
         tickers.put("TSLA","Tesla");
+        tickers.put("PBF","PBF Energy");
 
         return tickers.get(keyName);
     }

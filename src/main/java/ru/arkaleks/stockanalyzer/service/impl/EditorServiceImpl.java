@@ -3,10 +3,7 @@ package ru.arkaleks.stockanalyzer.service.impl;
 import ru.arkaleks.stockanalyzer.entity.Stock;
 import ru.arkaleks.stockanalyzer.service.EditorService;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -14,6 +11,7 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
 
     private final Connection connection;
     private static final String TABLE = "traid_stoks";
+    private static final String REPCOUNTTABLE = "report_counter";
 
     public EditorServiceImpl(Connection connection) {
         this.connection = connection;
@@ -45,6 +43,40 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    @Override
+    public void setReportCounter(int count){
+        String insertTableSQL = "INSERT INTO " + REPCOUNTTABLE + " (report_counter_amount) VALUES" + "(?)";
+        try(PreparedStatement ps = connection.prepareStatement(insertTableSQL)) {
+            ps.setInt(1,count);
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public void updateReportCounter(int count){
+        String insertTableSQL = "UPDATE " + REPCOUNTTABLE + " SET report_counter_amount = " + count
+                + " WHERE report_counter_id = 1";
+        try(PreparedStatement ps = connection.prepareStatement(insertTableSQL)) {
+            ps.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public int getReportCounter(){
+        int res = 0;
+        String getTableSQL = "SELECT report_counter_amount FROM " + REPCOUNTTABLE + " WHERE report_counter_id = 1";
+        try(PreparedStatement ps = connection.prepareStatement(getTableSQL)) {
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()){
+                res = resultSet.getInt(1);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return res;
     }
 
     @Override

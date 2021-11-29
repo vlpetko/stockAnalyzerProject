@@ -9,6 +9,12 @@ public interface EditorService {
 
     void add(Stock stock);
 
+    void setReportCounter(int count);
+
+    void updateReportCounter(int count);
+
+    int getReportCounter();
+
     void replace(Long id, Stock stock);
 
     void delete(String id);
