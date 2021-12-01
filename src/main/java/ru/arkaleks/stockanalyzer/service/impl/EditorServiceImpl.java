@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 public class EditorServiceImpl implements EditorService,AutoCloseable {
 
     private final Connection connection;
-    private static final String TABLE = "traid_stoks";
+    private static final String TABLE = "traid_stocks";
     private static final String REPCOUNTTABLE = "report_counter";
 
     public EditorServiceImpl(Connection connection) {
@@ -24,7 +24,7 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
 
     @Override
     public void add(Stock stock) {
-        String insertTableSQL = "INSERT INTO " + TABLE + " (traidstoks_tradingdate, traidstocks_openprice," +
+        String insertTableSQL = "INSERT INTO " + TABLE + " (traidstocks_tradingdate, traidstocks_openprice," +
                 " traidstocks_highprice,traidstocks_lowprice,traidstocks_closeprice,traidstocks_adjcloseprice," +
                 "traidstocks_volume,traidStocks_stockName,traidStocks_reportNumber,traidStocks_uploadDate) VALUES" +
                 "(?,?,?,?,?,?,?,?,?,?)";

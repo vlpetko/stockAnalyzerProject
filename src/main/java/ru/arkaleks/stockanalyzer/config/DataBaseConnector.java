@@ -1,11 +1,15 @@
 package ru.arkaleks.stockanalyzer.config;
 
+import java.awt.*;
 import java.io.InputStream;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 public class DataBaseConnector {
-    private static final String TABLE = "traid_stoks";
+    private static final String TABLE = "traid_stocks";
 
     private static final String REPCOUNT = "report_counter";
 
@@ -23,8 +27,6 @@ public class DataBaseConnector {
                     config.getProperty("password")
             );
             checkSchema(connection);
-            createTable(connection, TABLE);
-            createReportCounter(connection,REPCOUNT);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -39,22 +41,25 @@ public class DataBaseConnector {
      * @return true
      * @throws SQLException
      */
-    private boolean checkSchema(Connection connection) {
-        boolean result = false;
+    private void checkSchema(Connection connection) {
         try {
+            List<String> tables = new ArrayList<>(Arrays.asList(TABLE,REPCOUNT));
+            List<String> tablesFromShema = new ArrayList<>();
             DatabaseMetaData metaData = connection.getMetaData();
-            ResultSet res = metaData.getTables(null,null,"%",null);
+            ResultSet res = metaData.getTables(null,"public","%",null);
             while (res.next()) {
-                if (res.getString("TABLE_NAME").equals(TABLE)) {
-                    result = true;
-                }
+                tablesFromShema.add(res.getString("TABLE_NAME"));
             }
             res.close();
-          //TODO:реализовать метод
+            for (String st:tables
+                 ) {
+                if (!tablesFromShema.contains(st)){
+                    createTable(connection,st);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
     }
 
     /**
@@ -66,9 +71,10 @@ public class DataBaseConnector {
      */
     private boolean createTable(Connection connection, String tableName) {
         boolean result = false;
-        String createTable = "CREATE TABLE IF NOT EXISTS " + tableName + " ("
-                + "traidStoks_id SERIAL, "
-                + "traidStoks_tradingDate TIMESTAMP NOT NULL, "
+        String createTable = null;
+        String createStockTable = "CREATE TABLE IF NOT EXISTS " + TABLE + " ("
+                + "traidStocks_id SERIAL, "
+                + "traidStocks_tradingDate TIMESTAMP NOT NULL, "
                 + "traidStocks_openPrice NUMERIC(20,14) NOT NULL, "
                 + "traidStocks_highPrice NUMERIC(20,14) NOT NULL, "
                 + "traidStocks_lowPrice NUMERIC(20,14) NOT NULL, "
@@ -80,6 +86,17 @@ public class DataBaseConnector {
                 + "traidStocks_uploaddate TIMESTAMP "
                 + ")";
 
+        String createReportTable = "CREATE TABLE IF NOT EXISTS " + REPCOUNT + " ("
+                + "report_counter_id SERIAL, "
+                + "report_counter_amount INTEGER "
+                + ")";
+
+        if(tableName.equals(TABLE)){
+            createTable = createStockTable;
+        }
+        if(tableName.equals(REPCOUNT)){
+            createTable = createReportTable;
+        }
 
         if (createTable != null) {
             try (
@@ -94,24 +111,6 @@ public class DataBaseConnector {
         return result;
     }
 
-    private boolean createReportCounter(Connection connection, String tableName){
-        boolean result = false;
-        String createtable = "CREATE TABLE IF NOT EXISTS " + tableName + " ("
-                + "report_counter_id SERIAL, "
-                + "report_counter_amount INTEGER "
-                + ")";
-
-        if(createtable != null){
-            try (PreparedStatement ps = connection.prepareStatement(createtable)){
-                ps.executeUpdate();
-                result = true;
-                System.out.println("Table " + tableName + " was created successfully!");
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-        return result;
-    }
 }
 
 

@@ -47,6 +47,9 @@ public class BaseServiceImpl implements BaseService {
             uploadFile(pathToFile);
 
         }
+        if(key == 1){
+            String inputStock = inputService.ask("Введите данные");
+        }
     }
 
     /**
