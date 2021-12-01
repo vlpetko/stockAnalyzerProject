@@ -48,7 +48,8 @@ public class BaseServiceImpl implements BaseService {
 
         }
         if(key == 1){
-            String inputStock = inputService.ask("Введите данные");
+            String inputStock = inputService.ask("Введите данные через запятую");
+            manualInput(inputStock);
         }
     }
 
@@ -101,6 +102,31 @@ public class BaseServiceImpl implements BaseService {
         tickers.put("PBF","PBF Energy");
 
         return tickers.get(keyName);
+    }
+    private void manualInput(String uploadData){
+        String [] stockData = uploadData.split(",");
+
+        EditorServiceImpl editorService = new EditorServiceImpl(connection);
+
+        int repCount = editorService.getReportCounter() + 1;
+
+        Stock stock = new Stock();
+        stock.setTradingDate(LocalDate.parse(stockData[0]));
+        stock.setOpenPrice(Double.parseDouble(stockData[1]));
+        stock.setHighPrice(Double.parseDouble(stockData[2]));
+        stock.setLowPrice(Double.parseDouble(stockData[3]));
+        stock.setClosePrice(Double.parseDouble(stockData[4]));
+        stock.setAdjClosePrice(Double.parseDouble(stockData[5]));
+        stock.setVolume(Integer.parseInt((stockData[6])));
+        stock.setStockName(findFullStockNameByTicker(stockData[7]));
+        stock.setReportNumber(repCount);
+        editorService.add(stock);
+
+        if(repCount == 1){
+            editorService.setReportCounter(repCount);
+        }else{
+            editorService.updateReportCounter(repCount);
+        }
     }
 
 }
