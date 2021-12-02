@@ -48,8 +48,35 @@ public class BaseServiceImpl implements BaseService {
 
         }
         if(key == 1){
-            String inputStock = inputService.ask("Введите данные через запятую");
-            manualInput(inputStock);
+            EditorServiceImpl editorService = new EditorServiceImpl(connection);
+            int repCount = editorService.getReportCounter() + 1;
+
+            Stock stock = new Stock();
+
+            String inputData = inputService.ask("Введите дату торгов в формате гггг-мм-дд:");
+            stock.setTradingDate(LocalDate.parse(inputData));
+            String openPrice = inputService.ask("Введите цену открытия:");
+            stock.setOpenPrice(Double.parseDouble(openPrice));
+            String highPrice = inputService.ask("Введите максимальную цену:");
+            stock.setHighPrice(Double.parseDouble(highPrice));
+            String lowPrice = inputService.ask("Введите минимальную цену:");
+            stock.setLowPrice(Double.parseDouble(lowPrice));
+            String closePrice = inputService.ask("Введите цену закрытия:");
+            stock.setClosePrice(Double.parseDouble(closePrice));
+            String adjClosePrice = inputService.ask("Введите уточненую цену закрытия:");
+            stock.setAdjClosePrice(Double.parseDouble(adjClosePrice));
+            String volume = inputService.ask("Введите объем торгов:");
+            stock.setVolume(Integer.parseInt((volume)));
+            String stockName = inputService.ask("Введите наименование акции:");
+            stock.setStockName(stockName);
+            stock.setReportNumber(repCount);
+            editorService.add(stock);
+
+            if(repCount == 1){
+                editorService.setReportCounter(repCount);
+            }else{
+                editorService.updateReportCounter(repCount);
+            }
         }
     }
 
@@ -102,31 +129,6 @@ public class BaseServiceImpl implements BaseService {
         tickers.put("PBF","PBF Energy");
 
         return tickers.get(keyName);
-    }
-    private void manualInput(String uploadData){
-        String [] stockData = uploadData.split(",");
-
-        EditorServiceImpl editorService = new EditorServiceImpl(connection);
-
-        int repCount = editorService.getReportCounter() + 1;
-
-        Stock stock = new Stock();
-        stock.setTradingDate(LocalDate.parse(stockData[0]));
-        stock.setOpenPrice(Double.parseDouble(stockData[1]));
-        stock.setHighPrice(Double.parseDouble(stockData[2]));
-        stock.setLowPrice(Double.parseDouble(stockData[3]));
-        stock.setClosePrice(Double.parseDouble(stockData[4]));
-        stock.setAdjClosePrice(Double.parseDouble(stockData[5]));
-        stock.setVolume(Integer.parseInt((stockData[6])));
-        stock.setStockName(findFullStockNameByTicker(stockData[7]));
-        stock.setReportNumber(repCount);
-        editorService.add(stock);
-
-        if(repCount == 1){
-            editorService.setReportCounter(repCount);
-        }else{
-            editorService.updateReportCounter(repCount);
-        }
     }
 
 }
