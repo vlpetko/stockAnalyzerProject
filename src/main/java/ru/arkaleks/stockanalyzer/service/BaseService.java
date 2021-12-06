@@ -7,4 +7,8 @@ public interface BaseService {
     void addData(String position) throws IOException;
 
     void generateReport();
+
+    void replaceData();
+
+    void redactor(String pos);
 }

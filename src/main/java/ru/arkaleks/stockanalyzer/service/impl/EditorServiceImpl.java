@@ -82,6 +82,26 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
     @Override
     public void replace(Long id, Stock stock) {
 
+        String insertTableSQL = "UPDATE " + TABLE + " SET traidstocks_tradingdate = ?, traidstocks_openprice = ?," +
+                " traidstocks_highprice = ?, traidstocks_lowprice = ?, traidstocks_closeprice = ?," +
+                " traidstocks_adjcloseprice = ?, traidstocks_volume = ?, traidStocks_stockName = ?," +
+                " traidStocks_reportNumber = ?, traidStocks_uploadDate = ? WHERE traidstocks_id = " + id;
+        try (PreparedStatement ps = connection.prepareStatement(insertTableSQL)) {
+            ps.setTimestamp(1, Timestamp.valueOf(stock.getTradingDate().atStartOfDay()));
+            ps.setDouble(2,stock.getOpenPrice());
+            ps.setDouble(3,stock.getHighPrice());
+            ps.setDouble(4,stock.getLowPrice());
+            ps.setDouble(5,stock.getClosePrice());
+            ps.setDouble(6,stock.getAdjClosePrice());
+            ps.setInt(7,stock.getVolume());
+            ps.setString(8,stock.getStockName());
+            ps.setInt(9,stock.getReportNumber());
+            ps.setTimestamp(10,new java.sql.Timestamp(System.currentTimeMillis()));
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

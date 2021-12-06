@@ -5,6 +5,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import ru.arkaleks.stockanalyzer.entity.Stock;
 import ru.arkaleks.stockanalyzer.service.BaseService;
+import ru.arkaleks.stockanalyzer.service.EditorService;
 import ru.arkaleks.stockanalyzer.service.InputService;
 
 import java.awt.*;
@@ -38,6 +39,7 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public void addData(String position) {
+        EditorServiceImpl editorService = new EditorServiceImpl(connection);
 
         ArrayList<Stock> list = new ArrayList<Stock>();
 
@@ -45,38 +47,10 @@ public class BaseServiceImpl implements BaseService {
         if(key == 0){
           String pathToFile = inputService.ask("Введите путь к файлу");
             uploadFile(pathToFile);
-
         }
         if(key == 1){
-            EditorServiceImpl editorService = new EditorServiceImpl(connection);
-            int repCount = editorService.getReportCounter() + 1;
-
-            Stock stock = new Stock();
-
-            String inputData = inputService.ask("Введите дату торгов в формате гггг-мм-дд:");
-            stock.setTradingDate(LocalDate.parse(inputData));
-            String openPrice = inputService.ask("Введите цену открытия:");
-            stock.setOpenPrice(Double.parseDouble(openPrice));
-            String highPrice = inputService.ask("Введите максимальную цену:");
-            stock.setHighPrice(Double.parseDouble(highPrice));
-            String lowPrice = inputService.ask("Введите минимальную цену:");
-            stock.setLowPrice(Double.parseDouble(lowPrice));
-            String closePrice = inputService.ask("Введите цену закрытия:");
-            stock.setClosePrice(Double.parseDouble(closePrice));
-            String adjClosePrice = inputService.ask("Введите уточненую цену закрытия:");
-            stock.setAdjClosePrice(Double.parseDouble(adjClosePrice));
-            String volume = inputService.ask("Введите объем торгов:");
-            stock.setVolume(Integer.parseInt((volume)));
-            String stockName = inputService.ask("Введите наименование акции:");
-            stock.setStockName(stockName);
-            stock.setReportNumber(repCount);
-            editorService.add(stock);
-
-            if(repCount == 1){
-                editorService.setReportCounter(repCount);
-            }else{
-                editorService.updateReportCounter(repCount);
-            }
+            AddStock addStock = new AddStock(0,"Выберите раздел");
+            addStock.execute(inputService,editorService);
         }
     }
 
@@ -130,5 +104,83 @@ public class BaseServiceImpl implements BaseService {
 
         return tickers.get(keyName);
     }
+    @Override
+    public void redactor(String pos){
+        int key = Integer.parseInt(pos);
 
+        if (key == 0){
+
+        }else if (key == 1){
+            replaceData();
+        }
+    }
+
+    public void replaceData(){
+
+        EditorServiceImpl editorService = new EditorServiceImpl(connection);
+
+        Stock stock = new Stock();
+
+        long idNumber = Integer.parseInt(inputService.ask("Введите id редактируемой записи"));
+
+        LocalDate data = LocalDate.parse((inputService.ask("Введите дату в формате гггг-мм-дд")));
+        stock.setTradingDate(data);
+        double openPrice = Integer.parseInt(inputService.ask("Введите цену открытия"));
+        stock.setOpenPrice(openPrice);
+        double highPrice = Integer.parseInt(inputService.ask("Введите максимальную цену"));
+        stock.setHighPrice(highPrice);
+        double lowPrice = Integer.parseInt(inputService.ask("Введите минимальную цену"));
+        stock.setLowPrice(lowPrice);
+        double closePrice = Integer.parseInt(inputService.ask("Введите цену закрытия"));
+        stock.setClosePrice(closePrice);
+        double adjClosePrice = Integer.parseInt(inputService.ask("Введите уточненную цену закрытия"));
+        stock.setAdjClosePrice(adjClosePrice);
+        int volume = Integer.parseInt(inputService.ask("Введите объем торгов"));
+        stock.setVolume(volume);
+        String stockName = inputService.ask("Введите название акции");
+        stock.setStockName(stockName);
+        int reportNumber = Integer.parseInt(inputService.ask("Введите номер записи"));
+        stock.setReportNumber(reportNumber);
+
+        editorService.replace(idNumber,stock);
+    }
+
+    private class AddStock extends UserActionServiceImpl {
+
+        public AddStock(int key, String name) {
+            super(key, name);
+        }
+
+        public void execute(InputService inputService, EditorService editorService) {
+
+            int repCount = editorService.getReportCounter() + 1;
+
+            Stock stock = new Stock();
+
+            String inputData = inputService.ask("Введите дату торгов в формате гггг-мм-дд:");
+            stock.setTradingDate(LocalDate.parse(inputData));
+            String openPrice = inputService.ask("Введите цену открытия:");
+            stock.setOpenPrice(Double.parseDouble(openPrice));
+            String highPrice = inputService.ask("Введите максимальную цену:");
+            stock.setHighPrice(Double.parseDouble(highPrice));
+            String lowPrice = inputService.ask("Введите минимальную цену:");
+            stock.setLowPrice(Double.parseDouble(lowPrice));
+            String closePrice = inputService.ask("Введите цену закрытия:");
+            stock.setClosePrice(Double.parseDouble(closePrice));
+            String adjClosePrice = inputService.ask("Введите уточненую цену закрытия:");
+            stock.setAdjClosePrice(Double.parseDouble(adjClosePrice));
+            String volume = inputService.ask("Введите объем торгов:");
+            stock.setVolume(Integer.parseInt((volume)));
+            String stockName = inputService.ask("Введите наименование акции:");
+            stock.setStockName(stockName);
+            stock.setReportNumber(repCount);
+            editorService.add(stock);
+
+            if(repCount == 1){
+                editorService.setReportCounter(repCount);
+            }else{
+                editorService.updateReportCounter(repCount);
+            }
+        }
+    }
 }
