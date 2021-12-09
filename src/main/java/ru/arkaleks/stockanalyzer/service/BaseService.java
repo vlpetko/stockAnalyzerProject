@@ -10,5 +10,5 @@ public interface BaseService {
 
     void replaceData();
 
-    void redactor(String pos);
+    void redactData(String pos);
 }

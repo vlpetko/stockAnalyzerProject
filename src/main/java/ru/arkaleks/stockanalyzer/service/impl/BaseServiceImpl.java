@@ -105,13 +105,15 @@ public class BaseServiceImpl implements BaseService {
         return tickers.get(keyName);
     }
     @Override
-    public void redactor(String pos){
+    public void redactData(String pos){
+        EditorMenuServiceImpl service = new EditorMenuServiceImpl();
+
         int key = Integer.parseInt(pos);
 
         if (key == 0){
 
         }else if (key == 1){
-            replaceData();
+
         }
     }
 

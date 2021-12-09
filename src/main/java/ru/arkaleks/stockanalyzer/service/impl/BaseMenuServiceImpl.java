@@ -47,7 +47,7 @@ public class BaseMenuServiceImpl implements BaseMenuService {
     public void fillActions() {
         System.out.println("   Основное меню.");
         this.actions.add(new AddData(0, "Добавить новые данные."));
-        this.actions.add(new EditData(1,"Редактировать данные"));
+        this.actions.add(new EditData(1,"Редактировать данные."));
         this.actions.add(new GenerateReport(2, "Сформировать отчёт."));
         this.actions.add(new ExitAnalyzer(3, "Выйти из приложения."));
     }
@@ -114,7 +114,7 @@ public class BaseMenuServiceImpl implements BaseMenuService {
                     "4. Найти запись по наименованию акции\n" +
                     "5. Выйти из редактора");
 
-            baseService.redactor(pos);
+            baseService.redactData(pos);
         }
     }
 
