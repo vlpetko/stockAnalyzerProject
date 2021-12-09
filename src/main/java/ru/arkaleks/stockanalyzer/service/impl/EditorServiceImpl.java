@@ -4,6 +4,7 @@ import ru.arkaleks.stockanalyzer.entity.Stock;
 import ru.arkaleks.stockanalyzer.service.EditorService;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -111,7 +112,32 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
 
     @Override
     public List<Stock> findAll() {
-        return null;
+
+        List<Stock> result = new ArrayList<>();
+        String asd = "SELECT * FROM " + TABLE;
+        try (PreparedStatement ps = connection.prepareStatement(asd)) {
+            ResultSet res = ps.executeQuery();
+
+            while(res.next()){
+                Stock stock = new Stock();
+                stock.setId(res.getInt(1));
+                stock.setTradingDate(res.getDate(2).toLocalDate());
+                stock.setOpenPrice(res.getDouble(3));
+                stock.setHighPrice(res.getDouble(4));
+                stock.setLowPrice(res.getDouble(5));
+                stock.setClosePrice(res.getDouble(6));
+                stock.setAdjClosePrice(res.getDouble(7));
+                stock.setVolume(res.getInt(8));
+                stock.setStockName(res.getString(9));
+                stock.setReportNumber(res.getInt(10));
+                stock.setUploadDate(res.getDate(11).toLocalDate());
+
+                result.add(stock);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return result;
     }
 
     @Override
@@ -120,8 +146,36 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
     }
 
     @Override
-    public Stock findById(Predicate<String> predicate) {
-        return null;
+    public Stock findById(String idNumber) {
+        int number = Integer.parseInt(idNumber);
+        Stock stock = new Stock();
+
+        String idOnTable = "SELECT traidstocks_id, traidstocks_tradingdate, traidstocks_openprice," +
+                " traidstocks_highprice, traidstocks_lowprice, traidstocks_closeprice, traidstocks_adjcloseprice," +
+                " traidstocks_volume, traidStocks_stockName, traidStocks_reportNumber, traidStocks_uploadDate FROM " +
+                TABLE + " WHERE traidstocks_id = " + number;
+
+        try (PreparedStatement ps = connection.prepareStatement(idOnTable)) {
+            ResultSet res = ps.executeQuery();
+
+            while(res.next()){
+                stock.setId(res.getInt(1));
+                stock.setTradingDate(res.getDate(2).toLocalDate());
+                stock.setOpenPrice(res.getDouble(3));
+                stock.setHighPrice(res.getDouble(4));
+                stock.setLowPrice(res.getDouble(5));
+                stock.setClosePrice(res.getDouble(6));
+                stock.setAdjClosePrice(res.getDouble(7));
+                stock.setVolume(res.getInt(8));
+                stock.setStockName(res.getString(9));
+                stock.setReportNumber(res.getInt(10));
+                stock.setUploadDate(res.getDate(11).toLocalDate());
+
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return stock;
     }
 
     @Override

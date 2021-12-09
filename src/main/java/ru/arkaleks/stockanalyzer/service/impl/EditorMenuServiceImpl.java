@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class EditorMenuServiceImpl implements EditorMenuService {
 
@@ -98,6 +99,13 @@ public class EditorMenuServiceImpl implements EditorMenuService {
         @Override
         public void execute(InputService inputService, EditorService editorService) {
 
+            List<Stock> allStocks = editorService.findAll();
+            for (Stock stock:allStocks
+                 ) {
+                System.out.println(stock);
+
+            }
+
         }
     }
 
@@ -109,6 +117,8 @@ public class EditorMenuServiceImpl implements EditorMenuService {
         @Override
         public void execute(InputService inputService, EditorService editorService) {
 
+            String idNumber = inputService.ask("Введите ID");
+            System.out.println(editorService.findById(idNumber));
         }
     }
 

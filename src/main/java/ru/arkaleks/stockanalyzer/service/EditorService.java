@@ -23,7 +23,7 @@ public interface EditorService {
 
     List<Stock> findByName(String name);
 
-    Stock findById(Predicate<String> predicate);
+    Stock findById(String idNumber);
 
     Long getReportNumberFromDataBase();
 

@@ -24,6 +24,19 @@ public class Stock {
         this.volume = volume;
     }
 
+    public Stock(int id, LocalDate tradingDate, double openPrice, double highPrice, double lowPrice, double closePrice,
+                 double adjClosePrice, int volume, LocalDate uploadDate) {
+        this.id = id;
+        this.tradingDate = tradingDate;
+        this.openPrice = openPrice;
+        this.highPrice = highPrice;
+        this.lowPrice = lowPrice;
+        this.closePrice = closePrice;
+        this.adjClosePrice = adjClosePrice;
+        this.volume = volume;
+        this.uploadDate = uploadDate;
+    }
+
     private int id;
 
     @CsvDate(value = "yyyy-MM-dd")
