@@ -1,10 +1,12 @@
 package ru.arkaleks.stockanalyzer.service.impl;
 
+import ru.arkaleks.stockanalyzer.entity.Stock;
 import ru.arkaleks.stockanalyzer.service.BaseActionService;
 import ru.arkaleks.stockanalyzer.service.EditorMenuService;
 import ru.arkaleks.stockanalyzer.service.EditorService;
 import ru.arkaleks.stockanalyzer.service.InputService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -61,7 +63,30 @@ public class EditorMenuServiceImpl implements EditorMenuService {
 
         @Override
         public void execute(InputService inputService, EditorService editorService) {
+            Stock stock = new Stock();
 
+            long idNumber = Integer.parseInt(inputService.ask("Введите id редактируемой записи"));
+
+            LocalDate data = LocalDate.parse((inputService.ask("Введите дату в формате гггг-мм-дд")));
+            stock.setTradingDate(data);
+            double openPrice = Integer.parseInt(inputService.ask("Введите цену открытия"));
+            stock.setOpenPrice(openPrice);
+            double highPrice = Integer.parseInt(inputService.ask("Введите максимальную цену"));
+            stock.setHighPrice(highPrice);
+            double lowPrice = Integer.parseInt(inputService.ask("Введите минимальную цену"));
+            stock.setLowPrice(lowPrice);
+            double closePrice = Integer.parseInt(inputService.ask("Введите цену закрытия"));
+            stock.setClosePrice(closePrice);
+            double adjClosePrice = Integer.parseInt(inputService.ask("Введите уточненную цену закрытия"));
+            stock.setAdjClosePrice(adjClosePrice);
+            int volume = Integer.parseInt(inputService.ask("Введите объем торгов"));
+            stock.setVolume(volume);
+            String stockName = inputService.ask("Введите название акции");
+            stock.setStockName(stockName);
+            int reportNumber = Integer.parseInt(inputService.ask("Введите номер записи"));
+            stock.setReportNumber(reportNumber);
+
+            editorService.replace(idNumber,stock);
         }
     }
 

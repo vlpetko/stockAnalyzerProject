@@ -6,6 +6,7 @@ import ru.arkaleks.stockanalyzer.service.InputService;
 import ru.arkaleks.stockanalyzer.service.BaseMenuService;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -107,14 +108,7 @@ public class BaseMenuServiceImpl implements BaseMenuService {
 
         public void execute(InputService inputService, BaseService baseService) {
 
-            String pos = inputService.ask("0. Показать все записи\n" +
-                    " 1. Редактировать запись\n" +
-                    "2. Удалить запись\n" +
-                    "3. Найти запись по идентификатору\n" +
-                    "4. Найти запись по наименованию акции\n" +
-                    "5. Выйти из редактора");
-
-            baseService.redactData(pos);
+            baseService.redactData();
         }
     }
 

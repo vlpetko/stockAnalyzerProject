@@ -8,7 +8,5 @@ public interface BaseService {
 
     void generateReport();
 
-    void replaceData();
-
-    void redactData(String pos);
+    void redactData();
 }
