@@ -102,12 +102,19 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
     public void delete(String id) {
 
+        int idNumber = Integer.parseInt(id);
+        String delId = "DELETE FROM " + TABLE + " WHERE traidstocks_id = " + idNumber;
+
+        try (PreparedStatement ps = connection.prepareStatement(delId)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -142,7 +149,36 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
 
     @Override
     public List<Stock> findByName(String name) {
-        return null;
+
+        List<Stock> result = new ArrayList<>();
+        String tickerName = "SELECT traidstocks_id, traidstocks_tradingdate, traidstocks_openprice," +
+                " traidstocks_highprice, traidstocks_lowprice, traidstocks_closeprice, traidstocks_adjcloseprice," +
+                " traidstocks_volume, traidStocks_stockName, traidStocks_reportNumber, traidStocks_uploadDate FROM " +
+                TABLE + " WHERE traidStocks_stockName = '" + name +"'";
+
+        try (PreparedStatement ps = connection.prepareStatement(tickerName)) {
+            ResultSet res = ps.executeQuery();
+
+            while(res.next()){
+                Stock stock = new Stock();
+                stock.setId(res.getInt(1));
+                stock.setTradingDate(res.getDate(2).toLocalDate());
+                stock.setOpenPrice(res.getDouble(3));
+                stock.setHighPrice(res.getDouble(4));
+                stock.setLowPrice(res.getDouble(5));
+                stock.setClosePrice(res.getDouble(6));
+                stock.setAdjClosePrice(res.getDouble(7));
+                stock.setVolume(res.getInt(8));
+                stock.setStockName(res.getString(9));
+                stock.setReportNumber(res.getInt(10));
+                stock.setUploadDate(res.getDate(11).toLocalDate());
+
+                result.add(stock);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return result;
     }
 
     @Override

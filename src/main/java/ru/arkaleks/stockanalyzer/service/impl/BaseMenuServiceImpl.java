@@ -107,8 +107,12 @@ public class BaseMenuServiceImpl implements BaseMenuService {
         }
 
         public void execute(InputService inputService, BaseService baseService) {
+            try{
+                baseService.redactData();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            baseService.redactData();
         }
     }
 
@@ -122,7 +126,11 @@ public class BaseMenuServiceImpl implements BaseMenuService {
         }
 
         public void execute(InputService inputService, BaseService baseService) {
-            //TODO: реализовать метод
+            try{
+                baseService.generateReport();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
     }

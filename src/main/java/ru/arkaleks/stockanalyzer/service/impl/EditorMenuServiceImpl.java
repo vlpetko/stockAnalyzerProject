@@ -129,7 +129,8 @@ public class EditorMenuServiceImpl implements EditorMenuService {
 
         @Override
         public void execute(InputService inputService, EditorService editorService) {
-
+            String idNumber = inputService.ask("Введите ID");
+            editorService.delete(idNumber);
         }
     }
 
@@ -140,7 +141,13 @@ public class EditorMenuServiceImpl implements EditorMenuService {
 
         @Override
         public void execute(InputService inputService, EditorService editorService) {
+            String name = inputService.ask("Введите название акции");
+            List <Stock> stocks = editorService.findByName(name);
 
+            for (Stock st:stocks
+                 ) {
+                System.out.println(st);
+            }
         }
     }
 }
