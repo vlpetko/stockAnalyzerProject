@@ -226,26 +226,114 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
 
     @Override
     public List<Stock> getAllReports() {
-        return null;
+        List<Stock> result = new ArrayList<>();
+        String allReports = "SELECT traidStocks_reportNumber, traidStocks_stockName, cast(traidstocks_uploaddate as date) " +
+                " FROM " + TABLE + " GROUP BY traidStocks_reportNumber, traidStocks_stockName, cast(traidstocks_uploaddate as date)";
+
+        try (PreparedStatement ps = connection.prepareStatement(allReports)) {
+            ResultSet res = ps.executeQuery();
+
+            while(res.next()){
+                Stock stock = new Stock();
+                stock.setStockName(res.getString("traidstocks_stockname"));
+                stock.setReportNumber(res.getInt("traidstocks_reportnumber"));
+                stock.setUploadDate(res.getDate("traidstocks_uploaddate").toLocalDate());
+
+                result.add(stock);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return result;
     }
 
     @Override
-    public List<String> findMaxPriceAndTradeDateByReportNumber(Long reportNumber) {
-        return null;
+    public String findMaxPriceAndTradeDateByReportNumber(int reportNumber) {
+        String maxPrice = "SELECT traidstocks_highprice, traidstocks_tradingdate FROM "+ TABLE +
+                " WHERE traidstocks_highprice = (SELECT max(traidstocks_highprice) FROM " + TABLE +
+                " WHERE traidstocks_reportnumber = " + reportNumber +
+                ") GROUP BY traidstocks_highprice, traidstocks_tradingdate";
+        String priceValue = "";
+        String dateValue = "";
+
+        try (PreparedStatement ps = connection.prepareStatement(maxPrice)) {
+            ResultSet res = ps.executeQuery();
+            while(res.next()){
+                priceValue = res.getString("traidstocks_highprice");
+                dateValue = String.valueOf(res.getDate("traidstocks_tradingdate"));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return priceValue + " (" + dateValue + ")";
     }
 
     @Override
-    public List<String> findMinPriceAndTradeDateByReportNumber(Long reportNumber) {
-        return null;
+    public String findMinPriceAndTradeDateByReportNumber(int reportNumber) {
+        String minPrice = "SELECT traidstocks_lowprice, traidstocks_tradingdate FROM "+ TABLE +
+                " WHERE traidstocks_lowprice = (SELECT min (traidstocks_lowprice) FROM " + TABLE +
+                " WHERE traidstocks_reportnumber = " + reportNumber +
+                ") GROUP BY traidstocks_lowprice, traidstocks_tradingdate";
+        String priceValue = "";
+        String dateValue = "";
+
+        try (PreparedStatement ps = connection.prepareStatement(minPrice)) {
+            ResultSet res = ps.executeQuery();
+            while(res.next()){
+                priceValue = res.getString("traidstocks_lowprice");
+                dateValue = String.valueOf(res.getDate("traidstocks_tradingdate"));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return priceValue + " (" + dateValue + ")";
     }
 
     @Override
-    public List<String> getReportPeriodByReportNumber(Long reportNumber) {
-        return null;
+    public String getReportPeriodByReportNumber(int reportNumber) {
+        String minPeriod = "SELECT traidstocks_tradingdate FROM " + TABLE +
+                " WHERE traidstocks_tradingdate = (SELECT min(cast(traidstocks_tradingdate AS date)) FROM traid_stocks"
+                + " WHERE traidstocks_reportnumber = " + reportNumber + ") GROUP BY traidstocks_tradingdate";
+        String maxPeriod = "SELECT traidstocks_tradingdate FROM " + TABLE +
+                " WHERE traidstocks_tradingdate = (SELECT max(cast(traidstocks_tradingdate AS date)) FROM traid_stocks"
+                + " WHERE traidstocks_reportnumber = " + reportNumber + ") GROUP BY traidstocks_tradingdate";
+        String minData = "";
+        String maxData = "";
+
+        try (PreparedStatement ps = connection.prepareStatement(minPeriod)) {
+            ResultSet res = ps.executeQuery();
+            while(res.next()){
+                minData = String.valueOf(res.getDate("traidstocks_tradingdate"));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        try (PreparedStatement ps = connection.prepareStatement(maxPeriod)) {
+            ResultSet res = ps.executeQuery();
+            while(res.next()){
+                maxData = String.valueOf(res.getDate("traidstocks_tradingdate"));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return minData + " - " + maxData;
     }
 
     @Override
-    public String getTotalVolumeByReportNumber(Long reportNumber) {
-        return null;
+    public String getTotalVolumeByReportNumber(int reportNumber) {
+        String totalVolume = "SELECT sum(traidstocks_volume) FROM " + TABLE + " WHERE traidstocks_reportnumber = " +
+                reportNumber;
+        String amount = "";
+        try (PreparedStatement ps = connection.prepareStatement(totalVolume)) {
+            ResultSet res = ps.executeQuery();
+            while(res.next()){
+                amount = String.valueOf(res.getInt(1));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return amount;
     }
 }

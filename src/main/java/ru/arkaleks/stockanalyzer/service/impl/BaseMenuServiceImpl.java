@@ -131,7 +131,6 @@ public class BaseMenuServiceImpl implements BaseMenuService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 

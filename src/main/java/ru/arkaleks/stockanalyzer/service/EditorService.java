@@ -31,11 +31,11 @@ public interface EditorService {
 
     List<Stock> getAllReports();
 
-    List<String> findMaxPriceAndTradeDateByReportNumber(Long reportNumber);
+    String findMaxPriceAndTradeDateByReportNumber(int reportNumber);
 
-    List<String> findMinPriceAndTradeDateByReportNumber(Long reportNumber);
+    String findMinPriceAndTradeDateByReportNumber(int reportNumber);
 
-    List<String> getReportPeriodByReportNumber(Long reportNumber);
+    String getReportPeriodByReportNumber(int reportNumber);
 
-    String getTotalVolumeByReportNumber(Long reportNumber);
+    String getTotalVolumeByReportNumber(int reportNumber);
 }

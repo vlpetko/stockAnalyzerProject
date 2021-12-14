@@ -37,6 +37,12 @@ public class Stock {
         this.uploadDate = uploadDate;
     }
 
+    public Stock(String stockName, int reportNumber, LocalDate uploadDate) {
+        this.stockName = stockName;
+        this.reportNumber = reportNumber;
+        this.uploadDate = uploadDate;
+    }
+
     private int id;
 
     @CsvDate(value = "yyyy-MM-dd")

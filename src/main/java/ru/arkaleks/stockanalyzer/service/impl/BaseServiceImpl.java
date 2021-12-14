@@ -59,7 +59,9 @@ public class BaseServiceImpl implements BaseService {
      */
     @Override
     public void generateReport() {
-
+        EditorServiceImpl editorService = new EditorServiceImpl(connection);
+        EditorMenuServiceImpl menuService = new EditorMenuServiceImpl(inputService,editorService);
+        menuService.generateReport();
     }
 
     private void uploadFile(String path){
