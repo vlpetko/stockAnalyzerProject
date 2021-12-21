@@ -1,11 +1,9 @@
 package ru.arkaleks.stockanalyzer.service.impl;
 
 import ru.arkaleks.stockanalyzer.entity.Stock;
-import ru.arkaleks.stockanalyzer.service.BaseActionService;
-import ru.arkaleks.stockanalyzer.service.EditorMenuService;
-import ru.arkaleks.stockanalyzer.service.EditorService;
-import ru.arkaleks.stockanalyzer.service.InputService;
+import ru.arkaleks.stockanalyzer.service.*;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,34 +52,6 @@ public class EditorMenuServiceImpl implements EditorMenuService {
     public void show() {
         Consumer<UserActionServiceImpl> consumer = action -> System.out.println((action.info()));
         actions.forEach(consumer);
-    }
-
-    public void generateReport(){
-
-       List<Stock> reports = editorService.getAllReports();
-
-        for (Stock st:reports) {
-            System.out.println("Номер отчета: " + st.getReportNumber() + ", наименование акции: " + st.getStockName() +
-                    ", дата загрузки: " + st.getUploadDate());
-        }
-        String requestNumber = inputService.ask("Введите номер отчета: ");
-        int repNumber = Integer.parseInt(requestNumber);
-
-       String period = editorService.getReportPeriodByReportNumber(repNumber);
-       String maxPrice = editorService.findMaxPriceAndTradeDateByReportNumber(repNumber);
-       String minPrice = editorService.findMinPriceAndTradeDateByReportNumber(repNumber );
-       String totalVolume = editorService.getTotalVolumeByReportNumber(repNumber);
-        for (Stock stock : reports) {
-            if(stock.getReportNumber() == repNumber){
-                System.out.println("Отчет номер: " + repNumber + ".\n"
-                        + "Наименование акции: " + stock.getStockName() + ".\n"
-                        + "Отчет за период: " + period + ".\n"
-                        + "Максимальная стоимость акции (дата): " + maxPrice + ".\n"
-                        + "Минимальная стоимость акции (дата): " + minPrice + ".\n"
-                        + "Суммарный объем : " + totalVolume + ".");
-            }
-        }
-
     }
 
     class EditStockById extends UserActionServiceImpl{

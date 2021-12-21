@@ -5,10 +5,12 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import ru.arkaleks.stockanalyzer.entity.Stock;
 import ru.arkaleks.stockanalyzer.service.BaseService;
+import ru.arkaleks.stockanalyzer.service.ConvertToXLSXService;
 import ru.arkaleks.stockanalyzer.service.EditorService;
 import ru.arkaleks.stockanalyzer.service.InputService;
 
 import java.awt.*;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -60,8 +62,71 @@ public class BaseServiceImpl implements BaseService {
     @Override
     public void generateReport() {
         EditorServiceImpl editorService = new EditorServiceImpl(connection);
-        EditorMenuServiceImpl menuService = new EditorMenuServiceImpl(inputService,editorService);
-        menuService.generateReport();
+        List<Stock> reports = editorService.getAllReports();
+
+        for (Stock st:reports) {
+            System.out.println("Номер отчета: " + st.getReportNumber() + ", наименование акции: " + st.getStockName() +
+                    ", дата загрузки: " + st.getUploadDate());
+        }
+        String requestNumber = inputService.ask("Введите номер отчета: ");
+        int repNumber = Integer.parseInt(requestNumber);
+
+        List<String> repData = getReportData(repNumber,editorService,reports);
+        String saveReport = inputService.ask("Выберите дальнейшее действие:\n" +
+                "0. Сохранить отчет в файл\n" +
+                "1. Продолжить без сохранения");
+        if(saveReport.equals("0")){
+            saveReportToFile(repData);
+        }
+    }
+
+    private void saveReportToFile(List<String> reportDataList) {
+        String path = inputService.ask("Введите путь для сохранения файла: ");
+        File file = new File(path);
+        if (file.isDirectory()) {
+            ConvertToXLSXService converter  =  new ConvertToXLSXServiceImpl();
+            boolean  convertationResult  = converter.convertToXLSXFile(reportDataList, path);
+            if(convertationResult) {
+                System.out.println("Файл успешно сохранен.");
+            }
+        } else {
+            System.out.println("Указанной директории не существует.");
+        }
+    }
+
+    private List<String> getReportData(int repNumber,EditorServiceImpl editorService,List<Stock> reports){
+
+        List<String>reportData = new ArrayList<>();
+        String period = editorService.getReportPeriodByReportNumber(repNumber);
+        String maxPrice = editorService.findMaxPriceAndTradeDateByReportNumber(repNumber);
+        String minPrice = editorService.findMinPriceAndTradeDateByReportNumber(repNumber );
+        String totalVolume = editorService.getTotalVolumeByReportNumber(repNumber);
+        for (Stock stock : reports) {
+            if(stock.getReportNumber() == repNumber){
+                System.out.println("Отчет номер: " + repNumber + ".\n"
+                        + "Наименование акции: " + stock.getStockName() + ".\n"
+                        + "Отчет за период: " + period + ".\n"
+                        + "Максимальная стоимость акции (дата): " + maxPrice + ".\n"
+                        + "Минимальная стоимость акции (дата): " + minPrice + ".\n"
+                        + "Суммарный объем : " + totalVolume + ".");
+                reportData.add(String.valueOf(repNumber));
+                reportData.add(stock.getStockName());
+                String lastPeriod = period.substring(period.lastIndexOf(" - ") + 3);
+                String firstPeriod = period.substring(0,period.lastIndexOf(" - "));
+                reportData.add(firstPeriod);
+                reportData.add(lastPeriod);
+                String maxPriceOnly = maxPrice.substring(0,maxPrice.indexOf("(") - 1);
+                String maxPriceData = maxPrice.substring(maxPrice.indexOf("(") + 1,maxPrice.length() - 1);
+                reportData.add(maxPriceOnly);
+                reportData.add(maxPriceData);
+                String minPriceOnly = minPrice.substring(0,minPrice.indexOf("(") - 1);
+                String minPriceData = minPrice.substring(minPrice.indexOf("(") + 1,minPrice.length() - 1);
+                reportData.add(minPriceOnly);
+                reportData.add(minPriceData);
+                reportData.add(totalVolume);
+            }
+        }
+        return reportData;
     }
 
     private void uploadFile(String path){
