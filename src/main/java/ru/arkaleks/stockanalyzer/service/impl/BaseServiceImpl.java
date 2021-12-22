@@ -1,19 +1,15 @@
 package ru.arkaleks.stockanalyzer.service.impl;
 
-import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.exceptions.CsvValidationException;
 import ru.arkaleks.stockanalyzer.entity.Stock;
 import ru.arkaleks.stockanalyzer.service.BaseService;
 import ru.arkaleks.stockanalyzer.service.ConvertToXLSXService;
 import ru.arkaleks.stockanalyzer.service.EditorService;
 import ru.arkaleks.stockanalyzer.service.InputService;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -46,13 +42,13 @@ public class BaseServiceImpl implements BaseService {
         ArrayList<Stock> list = new ArrayList<Stock>();
 
         int key = Integer.parseInt(position);
-        if(key == 0){
-          String pathToFile = inputService.ask("Введите путь к файлу");
+        if (key == 0) {
+            String pathToFile = inputService.ask("Введите путь к файлу");
             uploadFile(pathToFile);
         }
-        if(key == 1){
-            AddStock addStock = new AddStock(0,"Выберите раздел");
-            addStock.execute(inputService,editorService);
+        if (key == 1) {
+            AddStock addStock = new AddStock(0, "Выберите раздел");
+            addStock.execute(inputService, editorService);
         }
     }
 
@@ -64,18 +60,18 @@ public class BaseServiceImpl implements BaseService {
         EditorServiceImpl editorService = new EditorServiceImpl(connection);
         List<Stock> reports = editorService.getAllReports();
 
-        for (Stock st:reports) {
+        for (Stock st : reports) {
             System.out.println("Номер отчета: " + st.getReportNumber() + ", наименование акции: " + st.getStockName() +
                     ", дата загрузки: " + st.getUploadDate());
         }
         String requestNumber = inputService.ask("Введите номер отчета: ");
         int repNumber = Integer.parseInt(requestNumber);
 
-        List<String> repData = getReportData(repNumber,editorService,reports);
+        List<String> repData = getReportData(repNumber, editorService, reports);
         String saveReport = inputService.ask("Выберите дальнейшее действие:\n" +
                 "0. Сохранить отчет в файл\n" +
                 "1. Продолжить без сохранения");
-        if(saveReport.equals("0")){
+        if (saveReport.equals("0")) {
             saveReportToFile(repData);
         }
     }
@@ -84,9 +80,9 @@ public class BaseServiceImpl implements BaseService {
         String path = inputService.ask("Введите путь для сохранения файла: ");
         File file = new File(path);
         if (file.isDirectory()) {
-            ConvertToXLSXService converter  =  new ConvertToXLSXServiceImpl();
-            boolean  convertationResult  = converter.convertToXLSXFile(reportDataList, path);
-            if(convertationResult) {
+            ConvertToXLSXService converter = new ConvertToXLSXServiceImpl();
+            boolean convertationResult = converter.convertToXLSXFile(reportDataList, path);
+            if (convertationResult) {
                 System.out.println("Файл успешно сохранен.");
             }
         } else {
@@ -94,15 +90,15 @@ public class BaseServiceImpl implements BaseService {
         }
     }
 
-    private List<String> getReportData(int repNumber,EditorServiceImpl editorService,List<Stock> reports){
+    private List<String> getReportData(int repNumber, EditorServiceImpl editorService, List<Stock> reports) {
 
-        List<String>reportData = new ArrayList<>();
+        List<String> reportData = new ArrayList<>();
         String period = editorService.getReportPeriodByReportNumber(repNumber);
         String maxPrice = editorService.findMaxPriceAndTradeDateByReportNumber(repNumber);
-        String minPrice = editorService.findMinPriceAndTradeDateByReportNumber(repNumber );
+        String minPrice = editorService.findMinPriceAndTradeDateByReportNumber(repNumber);
         String totalVolume = editorService.getTotalVolumeByReportNumber(repNumber);
         for (Stock stock : reports) {
-            if(stock.getReportNumber() == repNumber){
+            if (stock.getReportNumber() == repNumber) {
                 System.out.println("Отчет номер: " + repNumber + ".\n"
                         + "Наименование акции: " + stock.getStockName() + ".\n"
                         + "Отчет за период: " + period + ".\n"
@@ -112,15 +108,15 @@ public class BaseServiceImpl implements BaseService {
                 reportData.add(String.valueOf(repNumber));
                 reportData.add(stock.getStockName());
                 String lastPeriod = period.substring(period.lastIndexOf(" - ") + 3);
-                String firstPeriod = period.substring(0,period.lastIndexOf(" - "));
+                String firstPeriod = period.substring(0, period.lastIndexOf(" - "));
                 reportData.add(firstPeriod);
                 reportData.add(lastPeriod);
-                String maxPriceOnly = maxPrice.substring(0,maxPrice.indexOf("(") - 1);
-                String maxPriceData = maxPrice.substring(maxPrice.indexOf("(") + 1,maxPrice.length() - 1);
+                String maxPriceOnly = maxPrice.substring(0, maxPrice.indexOf("(") - 1);
+                String maxPriceData = maxPrice.substring(maxPrice.indexOf("(") + 1, maxPrice.length() - 1);
                 reportData.add(maxPriceOnly);
                 reportData.add(maxPriceData);
-                String minPriceOnly = minPrice.substring(0,minPrice.indexOf("(") - 1);
-                String minPriceData = minPrice.substring(minPrice.indexOf("(") + 1,minPrice.length() - 1);
+                String minPriceOnly = minPrice.substring(0, minPrice.indexOf("(") - 1);
+                String minPriceData = minPrice.substring(minPrice.indexOf("(") + 1, minPrice.length() - 1);
                 reportData.add(minPriceOnly);
                 reportData.add(minPriceData);
                 reportData.add(totalVolume);
@@ -129,8 +125,8 @@ public class BaseServiceImpl implements BaseService {
         return reportData;
     }
 
-    private void uploadFile(String path){
-        if(path.toLowerCase().endsWith(".csv")){
+    private void uploadFile(String path) {
+        if (path.toLowerCase().endsWith(".csv")) {
             EditorServiceImpl editorService = new EditorServiceImpl(connection);
             try {
                 List<Stock> stocksFromFile = new CsvToBeanBuilder(new FileReader(path))
@@ -139,18 +135,18 @@ public class BaseServiceImpl implements BaseService {
                         .build()
                         .parse();
 
-                String tickerName = path.substring(path.lastIndexOf("\\") + 1,path.lastIndexOf(".csv"));
+                String tickerName = path.substring(path.lastIndexOf("\\") + 1, path.lastIndexOf(".csv"));
 
                 int repCount = editorService.getReportCounter() + 1;
 
-                for (Stock stock : stocksFromFile){
+                for (Stock stock : stocksFromFile) {
                     stock.setStockName(findFullStockNameByTicker(tickerName));
                     stock.setReportNumber(repCount);
                     editorService.add(stock);
                 }
-                if(repCount == 1){
+                if (repCount == 1) {
                     editorService.setReportCounter(repCount);
-                }else{
+                } else {
                     editorService.updateReportCounter(repCount);
                 }
 
@@ -159,23 +155,24 @@ public class BaseServiceImpl implements BaseService {
                 System.out.println("Файл не найден");
                 e.printStackTrace();
             }
-        }else{
+        } else {
             System.out.println("Выберите csv-файл");
         }
     }
 
-    private String findFullStockNameByTicker(String keyName){
+    private String findFullStockNameByTicker(String keyName) {
 
-        tickers.put("TSLA","Tesla");
-        tickers.put("PBF","PBF Energy");
+        tickers.put("TSLA", "Tesla");
+        tickers.put("PBF", "PBF Energy");
 
         return tickers.get(keyName);
     }
+
     @Override
-    public void redactData(){
+    public void redactData() {
         EditorServiceImpl editorService = new EditorServiceImpl(connection);
 
-        EditorMenuServiceImpl service = new EditorMenuServiceImpl(inputService,editorService);
+        EditorMenuServiceImpl service = new EditorMenuServiceImpl(inputService, editorService);
         service.fillActions();
         service.show();
         int key = this.inputService.ask("Введите пункт меню : ", service.getActions());
@@ -214,9 +211,9 @@ public class BaseServiceImpl implements BaseService {
             stock.setReportNumber(repCount);
             editorService.add(stock);
 
-            if(repCount == 1){
+            if (repCount == 1) {
                 editorService.setReportCounter(repCount);
-            }else{
+            } else {
                 editorService.updateReportCounter(repCount);
             }
         }

@@ -1,14 +1,14 @@
 package ru.arkaleks.stockanalyzer.service.impl;
 
 import ru.arkaleks.stockanalyzer.entity.Stock;
-import ru.arkaleks.stockanalyzer.service.*;
+import ru.arkaleks.stockanalyzer.service.EditorMenuService;
+import ru.arkaleks.stockanalyzer.service.EditorService;
+import ru.arkaleks.stockanalyzer.service.InputService;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class EditorMenuServiceImpl implements EditorMenuService {
 
@@ -36,16 +36,16 @@ public class EditorMenuServiceImpl implements EditorMenuService {
     @Override
     public void fillActions() {
         System.out.println("Меню редактора");
-        this.actions.add(new EditStockById(0,"Редактировать запись"));
-        this.actions.add(new ShowAllStocks(1,"Показать все записи"));
-        this.actions.add(new ShowStockById(2,"Найти запись по идентификатору"));
-        this.actions.add(new DeleteStockById(3,"Удалить запись"));
-        this.actions.add(new ShowStocksByName(4,"Найти запись по наименованию акции"));
+        this.actions.add(new EditStockById(0, "Редактировать запись"));
+        this.actions.add(new ShowAllStocks(1, "Показать все записи"));
+        this.actions.add(new ShowStockById(2, "Найти запись по идентификатору"));
+        this.actions.add(new DeleteStockById(3, "Удалить запись"));
+        this.actions.add(new ShowStocksByName(4, "Найти запись по наименованию акции"));
     }
 
     @Override
     public void select(int key) {
-        this.actions.get(key).execute(this.inputService,this.editorService);
+        this.actions.get(key).execute(this.inputService, this.editorService);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class EditorMenuServiceImpl implements EditorMenuService {
         actions.forEach(consumer);
     }
 
-    class EditStockById extends UserActionServiceImpl{
+    class EditStockById extends UserActionServiceImpl {
 
         protected EditStockById(int key, String name) {
             super(key, name);
@@ -85,7 +85,7 @@ public class EditorMenuServiceImpl implements EditorMenuService {
             int reportNumber = Integer.parseInt(inputService.ask("Введите номер записи"));
             stock.setReportNumber(reportNumber);
 
-            editorService.replace(idNumber,stock);
+            editorService.replace(idNumber, stock);
         }
     }
 
@@ -98,8 +98,8 @@ public class EditorMenuServiceImpl implements EditorMenuService {
         public void execute(InputService inputService, EditorService editorService) {
 
             List<Stock> allStocks = editorService.findAll();
-            for (Stock stock:allStocks
-                 ) {
+            for (Stock stock : allStocks
+            ) {
                 System.out.println(stock);
 
             }
@@ -140,10 +140,10 @@ public class EditorMenuServiceImpl implements EditorMenuService {
         @Override
         public void execute(InputService inputService, EditorService editorService) {
             String name = inputService.ask("Введите название акции");
-            List <Stock> stocks = editorService.findByName(name);
+            List<Stock> stocks = editorService.findByName(name);
 
-            for (Stock st:stocks
-                 ) {
+            for (Stock st : stocks
+            ) {
                 System.out.println(st);
             }
         }

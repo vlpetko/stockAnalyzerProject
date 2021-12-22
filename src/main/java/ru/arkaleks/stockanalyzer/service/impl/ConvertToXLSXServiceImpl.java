@@ -1,11 +1,6 @@
 package ru.arkaleks.stockanalyzer.service.impl;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import ru.arkaleks.stockanalyzer.service.ConvertToXLSXService;
 import ru.arkaleks.stockanalyzer.service.InputService;
@@ -22,20 +17,38 @@ public class ConvertToXLSXServiceImpl implements ConvertToXLSXService {
     @Override
     public boolean convertToXLSXFile(List<String> reportDataList, String filepath) {
         boolean result = false;
+        String[] names = new String[]{"Номер отчета", "Наименование акции", "Начало периода", "Конец периода", "Максимальная стоимость",
+                "Дата максимальной стоимости", "Минимальная стоимость", "Дата минимальной стоимости", "Суммарный объем"};
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("report");
+        CellStyle style = workbook.createCellStyle();
+        Font font = workbook.createFont();
+        font.setBold(true);
+        style.setFont(font);
+        BorderStyle borderStyle = BorderStyle.MEDIUM;
+        style.setBorderBottom(borderStyle);
+        style.setBorderRight(borderStyle);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
         Row row = sheet.createRow(0);
+        Row row1 = sheet.createRow(1);
 
         for (int i = 0; i < reportDataList.size(); i++) {
             Cell cell = row.createCell(i);
-            cell.setCellValue(reportDataList.get(i));
+            cell.setCellValue(names[i]);
+            cell.setCellStyle(style);
+
+            Cell cell1 = row1.createCell(i);
+            cell1.setCellValue(reportDataList.get(i));
             sheet.autoSizeColumn(i);
         }
 
         File currDir = new File(filepath);
         String path = currDir.getAbsolutePath();
 
-        String fileLocation = path + "\\"+ reportDataList.get(1) + ".xlsx";
+        String fileLocation = path + "\\" + reportDataList.get(1) + ".xlsx";
 
         FileOutputStream outputStream = null;
         try {

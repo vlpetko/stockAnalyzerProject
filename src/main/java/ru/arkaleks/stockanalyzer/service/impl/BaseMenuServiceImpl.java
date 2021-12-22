@@ -1,15 +1,13 @@
 package ru.arkaleks.stockanalyzer.service.impl;
 
 import ru.arkaleks.stockanalyzer.service.BaseActionService;
+import ru.arkaleks.stockanalyzer.service.BaseMenuService;
 import ru.arkaleks.stockanalyzer.service.BaseService;
 import ru.arkaleks.stockanalyzer.service.InputService;
-import ru.arkaleks.stockanalyzer.service.BaseMenuService;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.function.Consumer;
 
 public class BaseMenuServiceImpl implements BaseMenuService {
@@ -48,7 +46,7 @@ public class BaseMenuServiceImpl implements BaseMenuService {
     public void fillActions() {
         System.out.println("   Основное меню.");
         this.actions.add(new AddData(0, "Добавить новые данные."));
-        this.actions.add(new EditData(1,"Редактировать данные."));
+        this.actions.add(new EditData(1, "Редактировать данные."));
         this.actions.add(new GenerateReport(2, "Сформировать отчёт."));
         this.actions.add(new ExitAnalyzer(3, "Выйти из приложения."));
     }
@@ -107,7 +105,7 @@ public class BaseMenuServiceImpl implements BaseMenuService {
         }
 
         public void execute(InputService inputService, BaseService baseService) {
-            try{
+            try {
                 baseService.redactData();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -126,7 +124,7 @@ public class BaseMenuServiceImpl implements BaseMenuService {
         }
 
         public void execute(InputService inputService, BaseService baseService) {
-            try{
+            try {
                 baseService.generateReport();
             } catch (Exception e) {
                 e.printStackTrace();

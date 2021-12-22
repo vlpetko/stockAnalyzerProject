@@ -6,9 +6,8 @@ import ru.arkaleks.stockanalyzer.service.EditorService;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
-public class EditorServiceImpl implements EditorService,AutoCloseable {
+public class EditorServiceImpl implements EditorService, AutoCloseable {
 
     private final Connection connection;
     private static final String TABLE = "traid_stocks";
@@ -31,47 +30,48 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
                 "(?,?,?,?,?,?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(insertTableSQL)) {
             ps.setTimestamp(1, Timestamp.valueOf(stock.getTradingDate().atStartOfDay()));
-            ps.setDouble(2,stock.getOpenPrice());
-            ps.setDouble(3,stock.getHighPrice());
-            ps.setDouble(4,stock.getLowPrice());
-            ps.setDouble(5,stock.getClosePrice());
-            ps.setDouble(6,stock.getAdjClosePrice());
-            ps.setInt(7,stock.getVolume());
-            ps.setString(8,stock.getStockName());
-            ps.setInt(9,stock.getReportNumber());
-            ps.setTimestamp(10,new java.sql.Timestamp(System.currentTimeMillis()));
+            ps.setDouble(2, stock.getOpenPrice());
+            ps.setDouble(3, stock.getHighPrice());
+            ps.setDouble(4, stock.getLowPrice());
+            ps.setDouble(5, stock.getClosePrice());
+            ps.setDouble(6, stock.getAdjClosePrice());
+            ps.setInt(7, stock.getVolume());
+            ps.setString(8, stock.getStockName());
+            ps.setInt(9, stock.getReportNumber());
+            ps.setTimestamp(10, new java.sql.Timestamp(System.currentTimeMillis()));
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     @Override
-    public void setReportCounter(int count){
+    public void setReportCounter(int count) {
         String insertTableSQL = "INSERT INTO " + REPCOUNTTABLE + " (report_counter_amount) VALUES" + "(?)";
-        try(PreparedStatement ps = connection.prepareStatement(insertTableSQL)) {
-            ps.setInt(1,count);
+        try (PreparedStatement ps = connection.prepareStatement(insertTableSQL)) {
+            ps.setInt(1, count);
             ps.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-    public void updateReportCounter(int count){
+    public void updateReportCounter(int count) {
         String insertTableSQL = "UPDATE " + REPCOUNTTABLE + " SET report_counter_amount = " + count
                 + " WHERE report_counter_id = 1";
-        try(PreparedStatement ps = connection.prepareStatement(insertTableSQL)) {
+        try (PreparedStatement ps = connection.prepareStatement(insertTableSQL)) {
             ps.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-    public int getReportCounter(){
+    public int getReportCounter() {
         int res = 0;
         String getTableSQL = "SELECT report_counter_amount FROM " + REPCOUNTTABLE + " WHERE report_counter_id = 1";
-        try(PreparedStatement ps = connection.prepareStatement(getTableSQL)) {
+        try (PreparedStatement ps = connection.prepareStatement(getTableSQL)) {
             ResultSet resultSet = ps.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 res = resultSet.getInt(1);
             }
         } catch (SQLException throwables) {
@@ -89,15 +89,15 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
                 " traidStocks_reportNumber = ?, traidStocks_uploadDate = ? WHERE traidstocks_id = " + id;
         try (PreparedStatement ps = connection.prepareStatement(insertTableSQL)) {
             ps.setTimestamp(1, Timestamp.valueOf(stock.getTradingDate().atStartOfDay()));
-            ps.setDouble(2,stock.getOpenPrice());
-            ps.setDouble(3,stock.getHighPrice());
-            ps.setDouble(4,stock.getLowPrice());
-            ps.setDouble(5,stock.getClosePrice());
-            ps.setDouble(6,stock.getAdjClosePrice());
-            ps.setInt(7,stock.getVolume());
-            ps.setString(8,stock.getStockName());
-            ps.setInt(9,stock.getReportNumber());
-            ps.setTimestamp(10,new java.sql.Timestamp(System.currentTimeMillis()));
+            ps.setDouble(2, stock.getOpenPrice());
+            ps.setDouble(3, stock.getHighPrice());
+            ps.setDouble(4, stock.getLowPrice());
+            ps.setDouble(5, stock.getClosePrice());
+            ps.setDouble(6, stock.getAdjClosePrice());
+            ps.setInt(7, stock.getVolume());
+            ps.setString(8, stock.getStockName());
+            ps.setInt(9, stock.getReportNumber());
+            ps.setTimestamp(10, new java.sql.Timestamp(System.currentTimeMillis()));
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -125,7 +125,7 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
         try (PreparedStatement ps = connection.prepareStatement(asd)) {
             ResultSet res = ps.executeQuery();
 
-            while(res.next()){
+            while (res.next()) {
                 Stock stock = new Stock();
                 stock.setId(res.getInt(1));
                 stock.setTradingDate(res.getDate(2).toLocalDate());
@@ -154,12 +154,12 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
         String tickerName = "SELECT traidstocks_id, traidstocks_tradingdate, traidstocks_openprice," +
                 " traidstocks_highprice, traidstocks_lowprice, traidstocks_closeprice, traidstocks_adjcloseprice," +
                 " traidstocks_volume, traidStocks_stockName, traidStocks_reportNumber, traidStocks_uploadDate FROM " +
-                TABLE + " WHERE traidStocks_stockName = '" + name +"'";
+                TABLE + " WHERE traidStocks_stockName = '" + name + "'";
 
         try (PreparedStatement ps = connection.prepareStatement(tickerName)) {
             ResultSet res = ps.executeQuery();
 
-            while(res.next()){
+            while (res.next()) {
                 Stock stock = new Stock();
                 stock.setId(res.getInt(1));
                 stock.setTradingDate(res.getDate(2).toLocalDate());
@@ -194,7 +194,7 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
         try (PreparedStatement ps = connection.prepareStatement(idOnTable)) {
             ResultSet res = ps.executeQuery();
 
-            while(res.next()){
+            while (res.next()) {
                 stock.setId(res.getInt(1));
                 stock.setTradingDate(res.getDate(2).toLocalDate());
                 stock.setOpenPrice(res.getDouble(3));
@@ -233,7 +233,7 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
         try (PreparedStatement ps = connection.prepareStatement(allReports)) {
             ResultSet res = ps.executeQuery();
 
-            while(res.next()){
+            while (res.next()) {
                 Stock stock = new Stock();
                 stock.setStockName(res.getString("traidstocks_stockname"));
                 stock.setReportNumber(res.getInt("traidstocks_reportnumber"));
@@ -249,7 +249,7 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
 
     @Override
     public String findMaxPriceAndTradeDateByReportNumber(int reportNumber) {
-        String maxPrice = "SELECT traidstocks_highprice, traidstocks_tradingdate FROM "+ TABLE +
+        String maxPrice = "SELECT traidstocks_highprice, traidstocks_tradingdate FROM " + TABLE +
                 " WHERE traidstocks_highprice = (SELECT max(traidstocks_highprice) FROM " + TABLE +
                 " WHERE traidstocks_reportnumber = " + reportNumber +
                 ") GROUP BY traidstocks_highprice, traidstocks_tradingdate";
@@ -258,7 +258,7 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
 
         try (PreparedStatement ps = connection.prepareStatement(maxPrice)) {
             ResultSet res = ps.executeQuery();
-            while(res.next()){
+            while (res.next()) {
                 priceValue = res.getString("traidstocks_highprice");
                 dateValue = String.valueOf(res.getDate("traidstocks_tradingdate"));
             }
@@ -271,7 +271,7 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
 
     @Override
     public String findMinPriceAndTradeDateByReportNumber(int reportNumber) {
-        String minPrice = "SELECT traidstocks_lowprice, traidstocks_tradingdate FROM "+ TABLE +
+        String minPrice = "SELECT traidstocks_lowprice, traidstocks_tradingdate FROM " + TABLE +
                 " WHERE traidstocks_lowprice = (SELECT min (traidstocks_lowprice) FROM " + TABLE +
                 " WHERE traidstocks_reportnumber = " + reportNumber +
                 ") GROUP BY traidstocks_lowprice, traidstocks_tradingdate";
@@ -280,7 +280,7 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
 
         try (PreparedStatement ps = connection.prepareStatement(minPrice)) {
             ResultSet res = ps.executeQuery();
-            while(res.next()){
+            while (res.next()) {
                 priceValue = res.getString("traidstocks_lowprice");
                 dateValue = String.valueOf(res.getDate("traidstocks_tradingdate"));
             }
@@ -304,7 +304,7 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
 
         try (PreparedStatement ps = connection.prepareStatement(minPeriod)) {
             ResultSet res = ps.executeQuery();
-            while(res.next()){
+            while (res.next()) {
                 minData = String.valueOf(res.getDate("traidstocks_tradingdate"));
             }
         } catch (SQLException throwables) {
@@ -312,7 +312,7 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
         }
         try (PreparedStatement ps = connection.prepareStatement(maxPeriod)) {
             ResultSet res = ps.executeQuery();
-            while(res.next()){
+            while (res.next()) {
                 maxData = String.valueOf(res.getDate("traidstocks_tradingdate"));
             }
         } catch (SQLException throwables) {
@@ -328,7 +328,7 @@ public class EditorServiceImpl implements EditorService,AutoCloseable {
         String amount = "";
         try (PreparedStatement ps = connection.prepareStatement(totalVolume)) {
             ResultSet res = ps.executeQuery();
-            while(res.next()){
+            while (res.next()) {
                 amount = String.valueOf(res.getInt(1));
             }
         } catch (SQLException throwables) {
